@@ -1,0 +1,361 @@
+///////// update by Muhammad  2:30pm 28may
+
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const DetailsPage = ({ selectedRowIndex }) => {
+  const [selectedRowData, setSelectedRowData] = useState([]);
+
+  useEffect(() => {
+    if (selectedRowIndex !== null) {
+      console.log("Fetching data for index:", selectedRowIndex);
+      const res = fetchRowData(selectedRowIndex);
+      setSelectedRowData(res);
+      console.log(selectedRowData)
+    }
+  }, [selectedRowIndex]);
+
+  // async function fetchRowData(index) {
+  //   try {
+  //     const response = await axios.get(`http://localhost/crc/getSingleData.php?i_id=${index}`);
+  //     console.log("Fetched data:", response.data);
+  //     if (response.status === 200){
+  //       return response.data
+  //     }
+  //     else{
+  //       return [];
+  //     }
+  //     setSelectedRowData(response.data);
+  //     console.log(`set data: ${selectedRowData}`);
+  //   } catch (error) {
+  //     console.error("Error fetching row data:", error);
+  //   }
+  // }////////////////
+  
+  const fetchRowData = (index) => {
+    axios.get(`http://localhost/crc/getSingleData.php?i_id=${index}`)
+      .then((response) => {
+        console.log("Fetched data:", response.data);
+        setSelectedRowData(response.data);
+        console.log(`set data: ${selectedRowData}`);
+        
+      })
+      .catch((error) => {
+        console.error("Error fetching row data:", error);
+      });
+  };
+
+  const renderFields = () => {
+    if (!selectedRowData || Object.keys(selectedRowData).length === 0) {
+      return <div>Loading...</div>; // You can also display a loading indicator here
+    }
+    console.log(selectedRowData.id_its_id);
+    const fields = [
+      { title: "ITS number", value: selectedRowData?.id_its_id },
+      { title: "Index ID", value: selectedRowData?.index_id },
+      { title: "HOF number", value: selectedRowData?.hof_number },
+      { title: "Date Of Birth", value: selectedRowData?.date_of_birth },
+      { title: "Date of Meeting", value: selectedRowData?.date_of_meeting },
+      { title: "Phone No.", value: selectedRowData?.phone_no },
+      { title: "Telephone No.", value: selectedRowData?.telephone_no },
+      { title: "City Name", value: selectedRowData?.city_name },
+      { title: "Nationality", value: selectedRowData?.nationality },
+      { title: "Address", value: selectedRowData?.complete_home_address },
+      { title: "Department", value: selectedRowData?.department },
+      { title: "On-site", value: selectedRowData?.on_site },
+    ];
+
+    return fields.map(({ title, value }, index) => (
+      <div key={index}>{renderField(title, value)}</div>
+    ));
+  };
+
+  const renderField = (title, value) => (
+    <div>
+      <strong>{title}:</strong> {value || ""}
+    </div>
+  );
+
+  return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "white" }}>
+      <div style={{ width: "85%", height: "85vh", backgroundColor: "#007bff", borderRadius: "20px", padding: "20px", boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)", overflowY: "auto", overflow: "auto", color: "white" }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "white", color: "black", borderRadius: "10px", width: "150px", height: "150px", margin: "0 auto 20px auto" }}>
+          <span>Image Box</span>
+        </div>
+
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>{selectedRowData ? selectedRowData.id_name : "Name"}</h2>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px", textAlign: "left" }}>
+          {renderFields()}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DetailsPage;
+
+
+
+/////////////////
+
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const DetailsPage = ({ selectedRowIndex }) => {
+  const [selectedRowData, setSelectedRowData] = useState([]);
+
+  useEffect(() => {
+    if (selectedRowIndex !== null) {
+      console.log("Fetching data for index:", selectedRowIndex);
+      fetchRowData(selectedRowIndex);
+    } else {
+      setSelectedRowData([null]);
+    }
+  }, [selectedRowIndex]);
+
+  const fetchRowData = (index) => {
+    axios.get(`http://localhost/crc/getSingleData.php?i_id=${index}`)
+      .then((response) => {
+        console.log("Fetched data:", response.data);
+        setSelectedRowData(response.data);
+        console.log(setSelectedRowData);
+      })
+      .catch((error) => {
+        console.error("Error fetching row data:", error);
+      });
+  };
+
+  const renderFields = () => {
+    const fields = [
+      { title: "ITS number", value: selectedRowData?.id_its_id },
+      { title: "Index ID", value: selectedRowData?.index_id },
+      { title: "HOF number", value: selectedRowData?.hof_number },
+      { title: "Date Of Birth", value: selectedRowData?.date_of_birth },
+      { title: "Date of Meeting", value: selectedRowData?.date_of_meeting },
+      { title: "Phone No.", value: selectedRowData?.phone_no },
+      { title: "Telephone No.", value: selectedRowData?.telephone_no },
+      { title: "City Name", value: selectedRowData?.city_name },
+      { title: "Nationality", value: selectedRowData?.nationality },
+      { title: "Address", value: selectedRowData?.complete_home_address },
+      { title: "Department", value: selectedRowData?.department },
+      { title: "On-site", value: selectedRowData?.on_site },
+    ];
+
+    return fields.map(({ title, value }, index) => (
+      <div key={index}>{renderField(title, value)}</div>
+    ));
+  };
+
+  const renderField = (title, value) => (
+    <div>
+      <strong>{title}:</strong> {value || ""}
+    </div>
+  );
+
+  return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "white" }}>
+      <div style={{ width: "85%", height: "85vh", backgroundColor: "#007bff", borderRadius: "20px", padding: "20px", boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)", overflowY: "auto", overflow: "auto", color: "white" }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "white", color: "black", borderRadius: "10px", width: "150px", height: "150px", margin: "0 auto 20px auto" }}>
+          <span>Image Box</span>
+        </div>
+
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>{selectedRowData ? selectedRowData.id_name : "Name"}</h2>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px", textAlign: "left" }}>
+          {renderFields()}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DetailsPage;
+
+
+
+//////////////////////// Muhammad update 3 20pm
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const DetailsPage = ({ selectedRowIndex }) => {
+  const [selectedRowData, setSelectedRowData] = useState([{}]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (selectedRowIndex !== null) {
+        console.log("Fetching data for index:", selectedRowIndex);
+        try {
+          const data = await fetchRowData(selectedRowIndex);
+          setSelectedRowData(data);
+          console.log(data);
+        } catch (error) {
+          console.error("Error fetching row data:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [selectedRowIndex]);
+
+  // async function fetchRowData(index) {
+  //   try {
+  //     const response = await axios.get(`http://localhost/crc/getSingleData.php?i_id=${index}`);
+  //     console.log("Fetched data:", response.data);
+  //     if (response.status === 200){
+  //       return response.data
+  //     }
+  //     else{
+  //       return [];
+  //     }
+  //     setSelectedRowData(response.data);
+  //     console.log(`set data: ${selectedRowData}`);
+  //   } catch (error) {
+  //     console.error("Error fetching row data:", error);
+  //   }
+  // }////////////////
+  
+  const fetchRowData = (index) => {
+    axios.get(`http://localhost/crc/getSingleData.php?i_id=${index}`)
+      .then((response) => {
+        console.log("Fetched data:", response.data);
+        setSelectedRowData(response.data);
+        console.log(`set data: ${selectedRowData}`);
+        
+      })
+      .catch((error) => {
+        console.error("Error fetching row data:", error);
+      });
+  };
+
+  const renderFields = () => {
+    if (!selectedRowData || Object.keys(selectedRowData).length === 0) {
+      return <div>Loading...</div>; // You can also display a loading indicator here
+    }
+    console.log(selectedRowData.id_its_id);
+    const fields = [
+      { title: "ITS number", value: selectedRowData?.id_its_id },
+      { title: "Index ID", value: selectedRowData?.index_id },
+      { title: "HOF number", value: selectedRowData?.hof_number },
+      { title: "Date Of Birth", value: selectedRowData?.date_of_birth },
+      { title: "Date of Meeting", value: selectedRowData?.date_of_meeting },
+      { title: "Phone No.", value: selectedRowData?.phone_no },
+      { title: "Telephone No.", value: selectedRowData?.telephone_no },
+      { title: "City Name", value: selectedRowData?.city_name },
+      { title: "Nationality", value: selectedRowData?.nationality },
+      { title: "Address", value: selectedRowData?.complete_home_address },
+      { title: "Department", value: selectedRowData?.department },
+      { title: "On-site", value: selectedRowData?.on_site },
+    ];
+
+    return fields.map(({ title, value }, index) => (
+      <div key={index}>{renderField(title, value)}</div>
+    ));
+  };
+
+  const renderField = (title, value) => (
+    <div>
+      <strong>{title}:</strong> {value || ""}
+    </div>
+  );
+
+  return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "white" }}>
+      <div style={{ width: "85%", height: "85vh", backgroundColor: "#007bff", borderRadius: "20px", padding: "20px", boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)", overflowY: "auto", overflow: "auto", color: "white" }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "white", color: "black", borderRadius: "10px", width: "150px", height: "150px", margin: "0 auto 20px auto" }}>
+          <span>Image Box</span>
+        </div>
+
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>{selectedRowData ? selectedRowData.id_name : "Name"}</h2>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px", textAlign: "left" }}>
+          {renderFields()}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DetailsPage;
+
+
+////////////////////////// data fetch 
+
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const DetailsPage = ({ selectedRowIndex }) => {
+  const [selectedRowData, setSelectedRowData] = useState([]);
+
+  useEffect(() => {
+    if (selectedRowIndex !== null) {
+      console.log("Fetching data for index:", selectedRowIndex);
+      fetchRowData(selectedRowIndex);
+    } else {
+      setSelectedRowData([null]);
+    }
+  }, [selectedRowIndex]);
+
+  const fetchRowData = (index) => {
+    axios.get(`http://localhost/crc/getSingleData.php?i_id=${index}`)
+      .then((response) => {
+        console.log("Fetched data:", response.data);
+        setSelectedRowData(response.data);
+       
+      })
+      .catch((error) => {
+        console.error("Error fetching row data:", error);
+      });
+  };
+  console.log("Data from select row data",selectedRowData);
+  
+
+  const renderFields = () => {
+    const fields = [
+      { title: "ITS number", value: selectedRowData.id_its_id },
+      { title: "Index ID", value: selectedRowData?.index_id },
+      { title: "HOF number", value: selectedRowData?.hof_number },
+      { title: "Date Of Birth", value: selectedRowData?.date_of_birth },
+      { title: "Date of Meeting", value: selectedRowData?.date_of_meeting },
+      { title: "Phone No.", value: selectedRowData?.phone_no },
+      { title: "Telephone No.", value: selectedRowData?.telephone_no },
+      { title: "City Name", value: selectedRowData?.city_name },
+      { title: "Nationality", value: selectedRowData?.nationality },
+      { title: "Address", value: selectedRowData?.complete_home_address },
+      { title: "Department", value: selectedRowData?.department },
+      { title: "On-site", value: selectedRowData?.on_site },
+    ];
+
+    return fields.map(({ title, value }, index) => (
+      <div key={index}>{renderField(title, value)}</div>
+    ));
+  };
+
+  const renderField = (title, value) => (
+    <div>
+      <strong>{title}:</strong> {value || ""}
+    </div>
+  );
+
+  return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", backgroundColor: "white" }}>
+      <div style={{ width: "85%", height: "85vh", backgroundColor: "#007bff", borderRadius: "20px", padding: "20px", boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)", overflowY: "auto", overflow: "auto", color: "white" }}>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "white", color: "black", borderRadius: "10px", width: "150px", height: "150px", margin: "0 auto 20px auto" }}>
+          <span>Image Box</span>
+        </div>
+
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>{selectedRowData ? selectedRowData.id_name : "Name"}</h2>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px", textAlign: "left" }}>
+          {renderFields()}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DetailsPage;

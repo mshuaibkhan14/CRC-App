@@ -1,0 +1,346 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+// import { useNavigate } from "react-router-dom"; 
+import profileImage from "../assets/images/adnan.png";
+
+const TableComponent = ({ onSelectRow }) => {
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  // const navigate = useNavigate(); // Use useNavigate
+
+  useEffect(() => {
+    axios.get("http://localhost/crc/getData.php")
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error("There was an error fetching the data!", error);
+      });
+  }, []);
+
+  const handleSearch = () => {
+    const filtered = data.filter(item =>
+      item.id_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.id_its_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.id_hof_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.id_city.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
+
+  const handleRowClick = (index_id) => {
+    onSelectRow(index_id);
+  };
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        width: "100%",
+        padding: "20px",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Search all columns..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            padding: "10px",
+            width: "300px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
+        />
+        <button
+          onClick={handleSearch}
+          style={{
+            padding: "10px 20px",
+            borderRadius: "4px",
+            border: "none",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          Search
+        </button>
+      </div>
+      <table className="table table-striped" style={{ width: "100%", margin: "20px 0" }}>
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">ITS ID</th>
+            <th scope="col">HOF ID</th>
+            <th scope="col">City</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.length > 0 ? (
+            filteredData.map((item, index) => (
+              <tr key={item.id_id} onClick={() => handleRowClick(item.id_id)}>
+                <th scope="row">{index + 1}</th>
+                <td><img src={profileImage} alt={`Image for ${item.id_name}`} style={{ maxWidth: "100px" }} /></td>
+                <td>{item.id_name}</td>
+                <td>{item.id_its_id}</td>
+                <td>{item.id_hof_id}</td>
+                <td>{item.id_city}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" style={{ textAlign: "center" }}>
+                No data available. Please enter a search term and press the search button.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default TableComponent;
+
+
+
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import "bootstrap/dist/css/bootstrap.min.css";
+
+// const TableComponent = ({ onSelectRow }) => {
+//   const [data, setData] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [filteredData, setFilteredData] = useState([]);
+
+//   useEffect(() => {
+//     axios.get("http://localhost/crc/getData.php")
+//       .then(response => {
+//         setData(response.data);
+//       })
+//       .catch(error => {
+//         console.error("There was an error fetching the data!", error);
+//       });
+//   }, []);
+
+//   const handleSearch = () => {
+//     const filtered = data.filter(item =>
+//       item.id_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       item.id_its_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       item.id_hof_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       item.id_city.toLowerCase().includes(searchTerm.toLowerCase())
+//     );
+//     setFilteredData(filtered);
+//   };
+
+//   const handleRowClick = (index_id) => {
+//     onSelectRow(index_id);
+//   };
+
+//   return (
+//     <div>
+//       <div>
+//         <input
+//           type="text"
+//           placeholder="Search all columns..."
+//           value={searchTerm}
+//           onChange={(e) => setSearchTerm(e.target.value)}
+//         />
+//         <button onClick={handleSearch}>Search</button>
+//       </div>
+//       <table className="table table-striped">
+//         <thead className="thead-dark">
+//           <tr>
+//             <th scope="col">#</th>
+//             <th scope="col">Name</th>
+//             <th scope="col">ITS ID</th>
+//             <th scope="col">HOF ID</th>
+//             <th scope="col">City</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {filteredData.map((item, index) => (
+//             <tr key={index} onClick={() => handleRowClick(index)}>
+//               <td>{index + 1}</td>
+//               <td>{item.id_name}</td>
+//               <td>{item.id_its_id}</td>
+//               <td>{item.id_hof_id}</td>
+//               <td>{item.id_city}</td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// };
+
+// export default TableComponent;
+
+///////////////////   data table /////////// ENDS here
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const DetailsPanel = ({ selectedRowIndex }) => {
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  useEffect(() => {
+    if (selectedRowIndex !== null) {
+      console.log("Fetching data for index:", selectedRowIndex);
+      fetchRowData(selectedRowIndex);
+    } else {
+      setSelectedRowData(null);
+    }
+  }, [selectedRowIndex]);
+
+  const fetchRowData = async (index) => {
+    try {
+      const response = await axios.get(
+        `http://localhost/crc/getSingleData.php?i_id=${index}`
+      );
+      console.log("Fetched data:", response.data);
+      setSelectedRowData(response.data);
+    } catch (error) {
+      console.error("Error fetching row data:", error);
+    }
+  };
+
+  const renderFields = () => {
+    if (!selectedRowData) {
+      return <div>Loading...</div>;
+    }
+
+    const fields = [
+      { title: "ITS number", value: selectedRowData.id_its_id },
+      { title: "Index ID", value: selectedRowData.id_id },
+      { title: "HOF number", value: selectedRowData.id_hof_id },
+      { title: "Date Of Birth", value: selectedRowData.id_dob },
+      { title: "Date of Meeting", value: selectedRowData.id_plu },
+      { title: "Phone No.", value: selectedRowData.id_contact },
+      { title: "Telephone No.", value: selectedRowData.id_telephone },
+      { title: "City Name", value: selectedRowData.id_city },
+      { title: "Nationality", value: selectedRowData.id_nationality },
+      { title: "Address", value: selectedRowData.id_address },
+      { title: "Department", value: selectedRowData.id_jamaat },
+      { title: "On-site", value: selectedRowData.id_status },
+    ];
+
+    return fields.map(({ title, value }, index) => (
+      <div key={index}>
+        <strong>{title}:</strong>{" "}
+        {value !== undefined && value !== null ? value : "N/A"}
+      </div>
+    ));
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "white",
+      }}
+    >
+      <div
+        style={{
+          width: "85%",
+          height: "85vh",
+          backgroundColor: "#007bff",
+          borderRadius: "20px",
+          padding: "20px",
+          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+          overflowY: "auto",
+          color: "white",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "white",
+            color: "black",
+            borderRadius: "10px",
+            width: "150px",
+            height: "150px",
+            margin: "0 auto 20px auto",
+          }}
+        >
+          <span>Image Box</span>
+        </div>
+
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+          {selectedRowData ? selectedRowData.id_name : "Name"}
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "10px 20px",
+            textAlign: "left",
+          }}
+        >
+          {renderFields()}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DetailsPanel;
+
+//////////////// DetailsPanel
+
+import React, { useState } from "react";
+import './App.css';
+import Navbar from './components/NavBar';
+import TableComponent from './components/dataTable';
+import DetailsPanel from './components/DetailsPanel';
+import { BrowserRouter as Router} from "react-router-dom";
+
+function App() {
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+
+  const handleRowSelect = (index) => {
+    setSelectedRowIndex(index);
+  };
+
+
+  return (
+    <Router>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+        <Navbar />
+        <div style={{ display: 'flex', flex: 1 }}>
+          <div style={{ flex: 1, overflowY: 'auto' }}>
+            <TableComponent onSelectRow={handleRowSelect} />
+          </div>
+          <div style={{ flex: 1, overflowY: 'auto' }}>
+            <DetailsPanel selectedRowIndex={selectedRowIndex}/>
+          </div>
+        </div>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+/////////////////// app.js /////////
